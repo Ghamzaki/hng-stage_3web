@@ -28,7 +28,7 @@ A `csrf_token` cookie is set on the login page and checked on form submissions (
 ## Setup
 
 ```bash
-git clone https://github.com/your-org/insighta-web
+git clone https://github.com/your-org/hng-stage_3web
 cd insighta-web
 
 pip install -r requirements.txt

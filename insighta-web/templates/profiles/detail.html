@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ profile.name | title }} — Insighta Labs+{% endblock %}
+{% block content %}
+<div style="margin-bottom:1rem">
+  <a href="/profiles" style="color:var(--muted);font-size:.9rem">← Back to Profiles</a>
+</div>
+
+<h1 class="page-title">{{ profile.name | title }}</h1>
+
+<div class="card" style="max-width:600px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+    <div>
+      <div style="color:var(--muted);font-size:.8rem;margin-bottom:.25rem">GENDER</div>
+      <div style="font-size:1.1rem;font-weight:600;">
+        {% if profile.gender == 'male' %}
+          <span style="color:#63b3ed">♂ Male</span>
+        {% else %}
+          <span style="color:#f687b3">♀ Female</span>
+        {% endif %}
+      </div>
+      <div style="color:var(--muted);font-size:.8rem;margin-top:.2rem">
+        {{ (profile.gender_probability * 100) | round(1) }}% confidence
+      </div>
+    </div>
+
+    <div>
+      <div style="color:var(--muted);font-size:.8rem;margin-bottom:.25rem">AGE</div>
+      <div style="font-size:1.1rem;font-weight:600;">{{ profile.age }}</div>
+      <div style="color:var(--muted);font-size:.8rem;margin-top:.2rem">{{ profile.age_group | title }}</div>
+    </div>
+
+    <div>
+      <div style="color:var(--muted);font-size:.8rem;margin-bottom:.25rem">COUNTRY</div>
+      <div style="font-size:1.1rem;font-weight:600;">{{ profile.country_name }}</div>
+      <div style="color:var(--muted);font-size:.8rem;margin-top:.2rem">
+        {{ profile.country_id }} · {{ (profile.country_probability * 100) | round(1) }}% confidence
+      </div>
+    </div>
+
+    <div>
+      <div style="color:var(--muted);font-size:.8rem;margin-bottom:.25rem">CREATED</div>
+      <div style="font-size:.9rem;">{{ profile.created_at }}</div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem;">
+    <div style="color:var(--muted);font-size:.75rem;">ID: {{ profile.id }}</div>
+  </div>
+</div>
+{% endblock %}

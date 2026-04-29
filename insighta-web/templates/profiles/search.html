@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Search — Insighta Labs+{% endblock %}
+{% block content %}
+<h1 class="page-title">Natural Language Search</h1>
+
+<form method="get" action="/search" style="display:flex;gap:.75rem;margin-bottom:1.5rem;">
+  <input
+    name="q"
+    value="{{ q }}"
+    placeholder='Try: "young males from Nigeria" or "adults in Ghana"'
+    style="flex:1;font-size:1rem;padding:.6rem 1rem;"
+    autofocus
+  />
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+{% if q and not error %}
+  <div style="color:var(--muted);font-size:.9rem;margin-bottom:1rem">
+    {{ total }} result{{ 's' if total != 1 else '' }} for "<strong style="color:var(--text)">{{ q }}</strong>"
+  </div>
+
+  {% if results %}
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Age</th>
+          <th>Age Group</th>
+          <th>Country</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in results %}
+        <tr>
+          <td>{{ p.name | title }}</td>
+          <td>{% if p.gender == 'male' %}<span style="color:#63b3ed">♂ Male</span>{% else %}<span style="color:#f687b3">♀ Female</span>{% endif %}</td>
+          <td>{{ p.age }}</td>
+          <td>{{ p.age_group | title }}</td>
+          <td>{{ p.country_name }} ({{ p.country_id }})</td>
+          <td><a href="/profiles/{{ p.id }}" class="btn btn-ghost" style="padding:.25rem .6rem;font-size:.8rem">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    {% if page > 1 %}
+      <a href="/search?q={{ q }}&page={{ page - 1 }}">← Prev</a>
+    {% endif %}
+    <span class="current">{{ page }} / {{ total_pages }}</span>
+    {% if page < total_pages %}
+      <a href="/search?q={{ q }}&page={{ page + 1 }}">Next →</a>
+    {% endif %}
+  </div>
+
+  {% else %}
+  <div class="card" style="text-align:center;color:var(--muted);padding:3rem">
+    No results found.
+  </div>
+  {% endif %}
+{% endif %}
+
+{% if not q %}
+<div class="card" style="color:var(--muted);">
+  <p style="margin-bottom:.75rem"><strong style="color:var(--text)">Example queries:</strong></p>
+  <ul style="list-style:none;display:flex;flex-wrap:wrap;gap:.5rem">
+    {% for ex in ["young males from Nigeria", "adults in Ghana", "female seniors", "males between 25 and 35", "children from Kenya"] %}
+    <li>
+      <a href="/search?q={{ ex }}" style="background:var(--bg);border:1px solid var(--border);
+         border-radius:99px;padding:.3rem .8rem;font-size:.85rem;color:var(--muted);">
+        {{ ex }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endblock %}

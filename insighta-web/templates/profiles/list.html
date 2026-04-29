@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Profiles — Insighta Labs+{% endblock %}
+{% block content %}
+<h1 class="page-title">Profiles
+  <span style="color:var(--muted);font-size:.9rem;font-weight:400;margin-left:.5rem">{{ total }} total</span>
+</h1>
+
+<!-- Filters -->
+<form method="get" action="/profiles" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;align-items:flex-end;">
+  <div>
+    <label>Gender</label>
+    <select name="gender" style="width:120px">
+      <option value="">Any</option>
+      <option value="male" {% if filters.gender == 'male' %}selected{% endif %}>Male</option>
+      <option value="female" {% if filters.gender == 'female' %}selected{% endif %}>Female</option>
+    </select>
+  </div>
+  <div>
+    <label>Age Group</label>
+    <select name="age_group" style="width:130px">
+      <option value="">Any</option>
+      <option value="child" {% if filters.age_group == 'child' %}selected{% endif %}>Child</option>
+      <option value="teenager" {% if filters.age_group == 'teenager' %}selected{% endif %}>Teenager</option>
+      <option value="adult" {% if filters.age_group == 'adult' %}selected{% endif %}>Adult</option>
+      <option value="senior" {% if filters.age_group == 'senior' %}selected{% endif %}>Senior</option>
+    </select>
+  </div>
+  <div>
+    <label>Country Code</label>
+    <input name="country_id" value="{{ filters.country_id or '' }}" placeholder="e.g. NG" style="width:100px"/>
+  </div>
+  <div>
+    <label>Sort By</label>
+    <select name="sort_by" style="width:150px">
+      <option value="created_at" {% if filters.sort_by == 'created_at' %}selected{% endif %}>Created At</option>
+      <option value="age" {% if filters.sort_by == 'age' %}selected{% endif %}>Age</option>
+      <option value="gender_probability" {% if filters.sort_by == 'gender_probability' %}selected{% endif %}>Gender Prob.</option>
+    </select>
+  </div>
+  <div>
+    <label>Order</label>
+    <select name="order" style="width:90px">
+      <option value="asc" {% if filters.order == 'asc' %}selected{% endif %}>ASC</option>
+      <option value="desc" {% if filters.order == 'desc' %}selected{% endif %}>DESC</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Filter</button>
+  <a href="/profiles" class="btn btn-ghost">Reset</a>
+</form>
+
+<!-- Table -->
+{% if profiles %}
+<div class="card" style="padding:0;overflow:hidden;">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Age</th>
+        <th>Age Group</th>
+        <th>Country</th>
+        <th>Created</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in profiles %}
+      <tr>
+        <td>{{ p.name | title }}</td>
+        <td>
+          {% if p.gender == 'male' %}
+            <span style="color:#63b3ed">♂ Male</span>
+          {% else %}
+            <span style="color:#f687b3">♀ Female</span>
+          {% endif %}
+        </td>
+        <td>{{ p.age }}</td>
+        <td>{{ p.age_group | title }}</td>
+        <td>{{ p.country_name }} ({{ p.country_id }})</td>
+        <td style="color:var(--muted);font-size:.8rem">{{ p.created_at[:10] }}</td>
+        <td><a href="/profiles/{{ p.id }}" class="btn btn-ghost" style="padding:.25rem .6rem;font-size:.8rem">View</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="pagination">
+  {% if page > 1 %}
+    <a href="/profiles?page={{ page - 1 }}&limit=20{% if filters.gender %}&gender={{ filters.gender }}{% endif %}{% if filters.country_id %}&country_id={{ filters.country_id }}{% endif %}{% if filters.age_group %}&age_group={{ filters.age_group }}{% endif %}&sort_by={{ filters.sort_by }}&order={{ filters.order }}">← Prev</a>
+  {% endif %}
+  {% for p_num in range(1, total_pages + 1) %}
+    {% if p_num == page %}
+      <span class="current">{{ p_num }}</span>
+    {% elif p_num <= 3 or p_num >= total_pages - 2 or (p_num >= page - 1 and p_num <= page + 1) %}
+      <a href="/profiles?page={{ p_num }}&limit=20{% if filters.gender %}&gender={{ filters.gender }}{% endif %}{% if filters.country_id %}&country_id={{ filters.country_id }}{% endif %}{% if filters.age_group %}&age_group={{ filters.age_group }}{% endif %}&sort_by={{ filters.sort_by }}&order={{ filters.order }}">{{ p_num }}</a>
+    {% elif p_num == 4 or p_num == total_pages - 3 %}
+      <span style="color:var(--muted)">…</span>
+    {% endif %}
+  {% endfor %}
+  {% if links.next %}
+    <a href="/profiles?page={{ page + 1 }}&limit=20{% if filters.gender %}&gender={{ filters.gender }}{% endif %}{% if filters.country_id %}&country_id={{ filters.country_id }}{% endif %}{% if filters.age_group %}&age_group={{ filters.age_group }}{% endif %}&sort_by={{ filters.sort_by }}&order={{ filters.order }}">Next →</a>
+  {% endif %}
+</div>
+
+{% else %}
+<div class="card" style="text-align:center;color:var(--muted);padding:3rem">
+  No profiles found matching your filters.
+</div>
+{% endif %}
+{% endblock %}

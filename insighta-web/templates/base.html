@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Insighta Labs+{% endblock %}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3e;
+      --accent: #6c63ff;
+      --accent-dim: #4e48b8;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --success: #48bb78;
+      --danger: #fc8181;
+      --radius: 8px;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Nav */
+    .nav { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 2rem;
+           background: var(--surface); border-bottom: 1px solid var(--border); }
+    .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--accent); margin-right: auto; }
+    .nav a { color: var(--muted); font-size: 0.9rem; }
+    .nav a:hover { color: var(--text); text-decoration: none; }
+    .nav-logout form { display: inline; }
+    .nav-logout button { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.9rem; }
+
+    /* Layout */
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
+    .page-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+
+    /* Cards / surface */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+
+    /* Stat cards */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+    .stat-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .3rem; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--accent); }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { text-align: left; padding: .6rem 1rem; color: var(--muted); font-weight: 600;
+         border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: .6rem 1rem; border-bottom: 1px solid var(--border); }
+    tr:hover td { background: rgba(108,99,255,.06); }
+
+    /* Buttons */
+    .btn { display: inline-block; padding: .5rem 1.2rem; border-radius: var(--radius);
+           font-size: .9rem; font-weight: 600; cursor: pointer; border: none; transition: opacity .15s; }
+    .btn:hover { opacity: .85; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-danger { background: var(--danger); color: #fff; }
+
+    /* Form */
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; font-size: .85rem; color: var(--muted); margin-bottom: .3rem; }
+    input, select { width: 100%; padding: .5rem .75rem; background: var(--bg);
+                    border: 1px solid var(--border); border-radius: var(--radius);
+                    color: var(--text); font-size: .9rem; outline: none; }
+    input:focus, select:focus { border-color: var(--accent); }
+
+    /* Badge */
+    .badge { display: inline-block; padding: .2rem .6rem; border-radius: 99px; font-size: .75rem; font-weight: 600; }
+    .badge-admin { background: rgba(108,99,255,.2); color: var(--accent); }
+    .badge-analyst { background: rgba(72,187,120,.15); color: var(--success); }
+
+    /* Pagination */
+    .pagination { display: flex; align-items: center; gap: .5rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .pagination a, .pagination span { padding: .4rem .8rem; border-radius: var(--radius);
+      border: 1px solid var(--border); font-size: .85rem; color: var(--text); }
+    .pagination a:hover { background: var(--accent); border-color: var(--accent); color: #fff; text-decoration: none; }
+    .pagination .current { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* Alert */
+    .alert { padding: .75rem 1rem; border-radius: var(--radius); margin-bottom: 1rem; font-size: .9rem; }
+    .alert-error { background: rgba(252,129,129,.1); border: 1px solid var(--danger); color: var(--danger); }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+{% block navbar %}
+<nav class="nav">
+  <span class="nav-brand">⚡ Insighta Labs+</span>
+  {% if request.cookies.get('access_token') %}
+    <a href="/dashboard">Dashboard</a>
+    <a href="/profiles">Profiles</a>
+    <a href="/search">Search</a>
+    <a href="/account">Account</a>
+    <span class="nav-logout">
+      <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+      </form>
+    </span>
+  {% endif %}
+</nav>
+{% endblock %}
+
+<div class="container">
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

@@ -28,4 +28,4 @@ jobs:
         run: python -c "from main import app; print('App OK')"
         env:
           BACKEND_URL: https://hng-stage-3-delta.vercel.app
-          PORTAL_URL: https://hng-stage-3web-3aha.vercel.app
+          PORTAL_URL: https://hng-stage-3web.vercel.app
